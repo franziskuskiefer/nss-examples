@@ -8,10 +8,13 @@ INCLUDES    := -I/home/franziskus/Code/dist/Linux4.2_x86_64_cc_glibc_PTH_64_DBG.
 LIB_PATH    := -L/home/franziskus/Code/dist/Linux4.2_x86_64_cc_glibc_PTH_64_DBG.OBJ/lib
 STATIC_LIBS := /home/franziskus/Code/dist/Linux4.2_x86_64_cc_glibc_PTH_64_DBG.OBJ/lib/*.a
 
-all: checkcert
+all: checkcert dertest
 
 checkcert:
 	$(CC) $(INCLUDES) $(LIB_PATH) $(LIBS) checkcert.c -o checkcert $(STATIC_LIBS)
 
+dertest:
+	$(CC) $(INCLUDES) $(LIB_PATH) $(LIBS) DER_GetInt_Test.c -o dertest $(STATIC_LIBS)
+
 clean:
-	rm -rf checkcert
+	rm -rf checkcert dertest
