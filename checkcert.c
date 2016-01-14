@@ -183,7 +183,7 @@ static CERTCertificate* createEmptyCertificate(void) {
 }
 
 int main(int argc, char** argv) {
-  int verbose = 0, force = 0;
+  int verbose = 0, force = 0, onlyVerify = 0;
   int ascii = 0, issuerAscii = 0;
   char* progName = 0;
   PRFileDesc *inFile = 0, *issuerCertFile = 0;
@@ -212,7 +212,7 @@ int main(int argc, char** argv) {
   progName = strrchr(argv[0], '/');
   progName = progName ? progName + 1 : argv[0];
 
-  optstate = PL_CreateOptState(argc, argv, "aAvf");
+  optstate = PL_CreateOptState(argc, argv, "aAvfV");
   while ((status = PL_GetNextOpt(optstate)) == PL_OPT_OK) {
     switch (optstate->option) {
       case 'v':
@@ -231,10 +231,14 @@ int main(int argc, char** argv) {
         issuerAscii = 1;
         break;
 
+      case 'V':
+        onlyVerify = 1;
+        break;
+
       case '\0':
         if (!inFileName)
           inFileName = PL_strdup(optstate->value);
-        else if (!issuerCertFileName)
+        else if (!onlyVerify && !issuerCertFileName)
           issuerCertFileName = PL_strdup(optstate->value);
         else
           Usage(progName);
@@ -242,7 +246,7 @@ int main(int argc, char** argv) {
     }
   }
 
-  if (!inFileName || !issuerCertFileName || status == PL_OPT_BAD) {
+  if (!onlyVerify && (!inFileName || !issuerCertFileName || status == PL_OPT_BAD)) {
     /* insufficient or excess args */
     Usage(progName);
   }
@@ -254,11 +258,13 @@ int main(int argc, char** argv) {
     exit(1);
   }
 
-  issuerCertFile = PR_Open(issuerCertFileName, PR_RDONLY, 0);
-  if (!issuerCertFile) {
-    fprintf(stderr, "%s: unable to open \"%s\" for reading\n", progName,
-            issuerCertFileName);
-    exit(1);
+  if (!onlyVerify) {
+	issuerCertFile = PR_Open(issuerCertFileName, PR_RDONLY, 0);
+	if (!issuerCertFile) {
+	  fprintf(stderr, "%s: unable to open \"%s\" for reading\n", progName,
+	          issuerCertFileName);
+	  exit(1);
+	}
   }
 
   if (SECU_ReadDERFromFile(&derCert, inFile, ascii, PR_FALSE) != SECSuccess) {
@@ -301,7 +307,8 @@ int main(int argc, char** argv) {
                             &issuerCertSD->data);
     if (rv) {
       printf("%s: Does not appear to be an X509 Certificate.\n", progName);
-      exit(1);
+      if (!onlyVerify)
+      	exit(1);
     }
   }
 
