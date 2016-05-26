@@ -39,6 +39,7 @@ void check(PLArenaPool *arena, const char b64[], const char s[], const char sNam
   SECItem b64Decoded;
   PORT_Memset(&b64Decoded, 0, sizeof(b64Decoded));
   if (url) {
+#ifdef NSS_B64_URL_TEST
     if (!NSSBase64_URL_DecodeBuffer(arena, &b64Decoded,
                                     b64Item->data,
                                     b64Item->len)) {
@@ -46,6 +47,7 @@ void check(PLArenaPool *arena, const char b64[], const char s[], const char sNam
       printf(">>> Couldn't b64decode, NSSBase64_DecodeBuffer failed (URL).\n");
       return;
     }
+#endif
   } else {
     if (!NSSBase64_DecodeBuffer(arena, &b64Decoded,
                                 b64Item->data,
@@ -81,8 +83,9 @@ int main(int argc, char **argv) {
   check(arena, b642, s1, "b642-s1", false);
   check(arena, b643, s2, "b643-s2", false);
   check(arena, b644, s2, "b644-s2", false);
-  check(arena, b645, s2, "b645-s2", true);
-  check(arena, b646, s2, "b646-s2", true);
+  // not in NSS trunk
+  //check(arena, b645, s2, "b645-s2", true);
+  //check(arena, b646, s2, "b646-s2", true);
 
   PORT_FreeArena(arena, 0);
   printf("!!! Done.\n");

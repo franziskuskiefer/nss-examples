@@ -33,3 +33,7 @@
 
 # binaries
 checkcert
+listCiphers
+b64test
+certtest
+dertest

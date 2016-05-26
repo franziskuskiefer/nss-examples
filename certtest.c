@@ -39,6 +39,8 @@ int main(int argc, char **argv)
     CERTCertificate *cert = CERT_DecodeCertFromPackage((char*)data.data, data.len);
     if (cert){
       printf(" >>> read cert!\n");
+      printf(" >>> SN: %s\n", cert->subjectName);
+      printf(" >>> IN: %s\n", cert->issuerName);
       CERT_DestroyCertificate(cert);
     } else {
       printf(" >>> CERT_DecodeCertFromPackage failed.\n");
