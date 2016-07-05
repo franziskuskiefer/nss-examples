@@ -7,7 +7,7 @@ ifndef NSS_DIST_PATH
 NSS_DIST_PATH=/home/franziskus/Code/dist
 endif
 ifndef NSS_OBJ_PATH
-NSS_OBJ_PATH=Linux4.5_x86_64_cc_glibc_PTH_64_DBG.OBJ
+NSS_OBJ_PATH=Linux4.6_x86_64_cc_glibc_PTH_64_DBG.OBJ
 endif
 INCLUDES    := -I$(NSS_DIST_PATH)/$(NSS_OBJ_PATH)/include/ -I$(NSS_DIST_PATH)/private/nss/ -I$(NSS_DIST_PATH)/public/nss/
 LIB_PATH    := -L$(NSS_DIST_PATH)/$(NSS_OBJ_PATH)/lib
@@ -30,5 +30,8 @@ b64test:
 listciphers:
 	$(CC) $(INCLUDES) $(LIB_PATH) $(LIBS) $(CFLAGS) ciphers.c -o listCiphers $(STATIC_LIBS)
 
+signing:
+	$(CC) $(INCLUDES) $(LIB_PATH) $(LIBS) $(CFLAGS) signing.c -o signing $(STATIC_LIBS)
+
 clean:
-	rm -rf checkcert dertest certtest b64test listCiphers
+	rm -rf checkcert dertest certtest b64test listCiphers signing
