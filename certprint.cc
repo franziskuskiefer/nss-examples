@@ -15,6 +15,12 @@ struct NSSCertDeletePolicy {
 };
 typedef std::unique_ptr<CERTCertificate, NSSCertDeletePolicy> NSSCert;
 
+class NSSDatabase {
+public:
+  NSSDatabase() { assert(NSS_NoDB_Init(nullptr) == SECSuccess); }
+  ~NSSDatabase() { assert(NSS_Shutdown() == SECSuccess); }
+};
+
 #define BUF_SIZE 1024
 const std::string kPEMBeginCert = "-----BEGIN CERTIFICATE-----";
 const std::string kPEMEndCert = "-----END CERTIFICATE-----";
@@ -76,6 +82,10 @@ int main(int argc, char const *argv[]) {
     std::cout << "Usage: ./certprint <pem file>"  << std::endl;
     return 1;
   }
+
+  // assert(SECOID_Init() == SECSuccess);
+  static std::unique_ptr<NSSDatabase> db(new NSSDatabase());
+  assert(db != nullptr);
 
   NSSCert cert = read_cert(std::string(argv[1]));
   assert(cert);

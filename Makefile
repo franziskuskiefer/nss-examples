@@ -52,5 +52,8 @@ cpu-asm:
 certprint:
 	$(CCC) $(INCLUDES) $(LIB_PATH) $(LIBS) $(CFLAGS) certprint.cc -o certprint
 
+quickder:
+	$(CCC) $(INCLUDES) $(LIB_PATH) $(LIBS) $(CFLAGS) quickder.cc -o quickder
+
 clean:
-	rm -rf checkcert dertest certtest b64test listCiphers signing constant-time-cbc randomness ct-test cpu-cycles.asm certprint
+	rm -rf checkcert dertest certtest b64test listCiphers signing constant-time-cbc randomness ct-test cpu-cycles.asm certprint quickder
